@@ -29,7 +29,7 @@ func (user *User) Save() *errors.RestErr {
 	var current = userDB[user.ID] 
     if current != nil {
 		if current.Email == user.Email{
-			return errors.NewBadRequestError(fmt.Sprintf("user email  %s  already exists "))
+			return errors.NewBadRequestError(fmt.Sprintf("user email  %s  already exists",user.Email))
 		}
 		return errors.NewBadRequestError(fmt.Sprintf("user id  %d already exists",user.ID))
 	}
