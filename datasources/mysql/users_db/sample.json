@@ -1,0 +1,6 @@
+{
+ "username": "root" ,
+ "password":  "murali",
+ "host":  "localhost:3306",
+ "schema": "users_db",
+}
