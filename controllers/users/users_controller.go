@@ -10,12 +10,33 @@ import (
 	"github.com/sumudhar/go-book-store-user-api/utils/errors"
 )
 
-func CreateUser(c *gin.Context) {
+func Get(c *gin.Context) {
+
+	userId, userErr := strconv.ParseInt(c.Param("user_id"),10,64)
+
+	if userErr != nil {
+		err := errors.NewBadRequestError("user id should be a number")
+		c.JSON(err.Status,err)		
+		return
+	}
+
+	user, getErr:= services.GetUser(userId) 
+
+	if getErr !=nil {
+		// Implement the error
+		c.JSON(getErr.Status,getErr)
+        return
+	}
+
+	c.JSON(http.StatusOK,user)
+
+	
+}
+
+func Create(c *gin.Context) {
+
 	var user users.User
-    // fmt.Println(user)
-	// bytes,err := ioutil.ReadAll(c.Request.Body)
-	// fmt.Println(string(bytes))
-	// fmt.Println(err)
+
 	if err:= c.ShouldBindJSON(&user); err!=nil {
 		restErr := errors.NewBadRequestError("invalid Json body") 
 		c.JSON(restErr.Status,restErr)		
@@ -28,32 +49,49 @@ func CreateUser(c *gin.Context) {
         return
 	}
 	c.JSON(http.StatusCreated,result)
-	
-	//c.String(http.StatusNotImplemented, "Not yet Implemented!!!")
-
 }
 
-func GetUser(c *gin.Context) {
-
+func Update(c *gin.Context){
 	userId, userErr := strconv.ParseInt(c.Param("user_id"),10,64)
-
 	if userErr != nil {
 		err := errors.NewBadRequestError("user id should be a number")
 		c.JSON(err.Status,err)		
 		return
-
 	}
-    user, getErr:= services.GetUser(userId) 
-	if getErr !=nil {
+	
+	var user users.User
+	if err:= c.ShouldBindJSON(&user); err!=nil {
+		restErr := errors.NewBadRequestError("invalid Json body") 
+		c.JSON(restErr.Status,restErr)		
+		return
+	}
+
+	user.ID = userId
+	isPartial := c.Request.Method == http.MethodPatch
+	
+	result, updateErr:= services.UpdateUser(isPartial,user) 
+	
+	if updateErr !=nil {
 		// Implement the error
-		c.JSON(getErr.Status,getErr)
+		c.JSON(updateErr.Status,updateErr)
         return
 	}
-	c.JSON(http.StatusOK,user)
-	
-	
+	c.JSON(http.StatusOK,result)
 }
 
-// func SearchUser(c *gin.Context) {
-// 	c.String(http.StatusNotImplemented, "Not yet Implemented!!!")
-// }
+
+func Delete(c *gin.Context){
+	userId, idErr := strconv.ParseInt(c.Param("user_id"),10,64)
+	if idErr != nil {
+		err := errors.NewBadRequestError("user id should be a number")
+		c.JSON(err.Status,err)		
+		return
+	}
+	deleteErr:= services.DeleteUser(userId) 
+	if deleteErr !=nil {
+		// Implement the error
+		c.JSON(deleteErr.Status,deleteErr)
+        return
+	}
+	c.JSON(http.StatusOK,map[string]string{"status": "deleted"} )
+}
