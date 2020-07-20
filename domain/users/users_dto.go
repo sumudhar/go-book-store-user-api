@@ -21,6 +21,8 @@ type User struct {
 
 }
 
+type Users []User
+
 func (user *User) Validate() *errors.RestErr {
 	
 	user.FirstName = strings.TrimSpace(user.FirstName)

@@ -96,21 +96,17 @@ func (user *User) FindByStatus(status string) ([] User, *errors.RestErr){
 	 }
 	 
 	 defer rows.Close()
-	 fmt.Println("I am ok  1, ?",rows)
 	 results := make([]User,0)
 	 for rows.Next() {
-		fmt.Println("I am ok  2")
 		var user User;
 
 		if statusErr := rows.Scan(&user.ID,&user.FirstName,&user.LastName,&user.Email,&user.DateCreated,&user.Status); statusErr !=nil{
-			fmt.Println("I am not ok  3, ?",user)
 			return nil, mysql_utils.ParseError(statusErr)
 			
 		}
        results = append(results,user)
 	 }
-     fmt.Println("I am ok  3")
-	 if len(results) ==0{
+     if len(results) ==0{
 		return nil, errors.NewNotFoundError(fmt.Sprintf("no users matching with status %s",status))
 	 }
 	 return results,nil
