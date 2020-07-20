@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/sumudhar/go-book-store-user-api/domain/users"
+	"github.com/sumudhar/go-book-store-user-api/utils/date_utils"
 	"github.com/sumudhar/go-book-store-user-api/utils/errors"
 )
 
@@ -19,6 +20,9 @@ func CreateUser(user users.User) (*users.User, *errors.RestErr) {
 	if err := user.Validate(); err != nil {
        return nil, err
 	}
+	user.DateCreated= date_utils.GetNowDBFormat()
+	user.Status= users.ActiveStatus
+	
 	if err := user.Save(); err != nil {
 		return nil, err
 	}
@@ -65,4 +69,10 @@ func DeleteUser(userId int64)  *errors.RestErr{
 	user := &users.User{ID: userId}
 	
 	return user.Delete()
+}
+
+func Search(status string) ([] users.User, *errors.RestErr){
+    dao := &users.User{}
+	return dao.FindByStatus(status)
+	   	
 }
