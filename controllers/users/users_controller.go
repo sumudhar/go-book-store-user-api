@@ -36,17 +36,22 @@ func Create(c *gin.Context) {
 
 	var user users.User
 
+	// c.ShouldBindJSON() this method will capture the object come from request and bind the values
+	// againist the User Model columns and verifies
+
 	if err:= c.ShouldBindJSON(&user); err!=nil {
 		restErr := errors.NewBadRequestError("invalid Json body") 
 		c.JSON(restErr.Status,restErr)		
 		return
 	}
+	
 	result, saveErr:= services.UsersService.CreateUser(user) 
 	if saveErr !=nil {
 		// Implement the error
 		c.JSON(saveErr.Status,saveErr)
         return
 	}
+	
 	c.JSON(http.StatusCreated,result.Marshall(c.GetHeader("X-Public") == "true"))
 }
 

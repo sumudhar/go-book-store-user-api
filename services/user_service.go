@@ -6,6 +6,20 @@ import (
 	"github.com/sumudhar/go-book-store-user-api/utils/date_utils"
 	"github.com/sumudhar/go-book-store-user-api/utils/errors"
 )
+
+//  UsersService is an Interface  that represents the  all the services under the usersServiceInterface
+//  These services are like Getuser(), Createuser(),UpdateUser(),DeleteUser() and  SearchUser()
+//  These methods are accessed via the UserService from the External entities
+//  For example: we can invoke these services by
+//  services.UsersService.GetUser()-> where services i spackage name,
+//                                    UsersService is and Interface
+//								      and GetUser() Is a method
+//  services.UsersService.CreayeUser()
+//  services.UsersService.UpdateUser()
+//  services.UsersService.DeleteUser()
+//  services.UsersService.SearchUser()
+
+
 var (
 	UsersService usersServiceInterface = &usersService{}
 )
